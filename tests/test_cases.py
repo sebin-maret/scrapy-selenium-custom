@@ -25,12 +25,13 @@ class BaseScrapySeleniumTestCase(TestCase):
         cls.settings = {
             'SELENIUM_DRIVER_NAME': 'firefox',
             'SELENIUM_DRIVER_EXECUTABLE_PATH': which('geckodriver'),
-            'SELENIUM_DRIVER_ARGUMENTS': ['-headless']
+            'SELENIUM_DRIVER_ARGUMENTS': ['--headless=new']
         }
         '''
         cls.settings = {
             'SELENIUM_DRIVER_NAME': 'chrome',
             'SELENIUM_DRIVER_EXECUTABLE_PATH': None,
-            'SELENIUM_DRIVER_ARGUMENTS': ['--headless']
+            # https://www.selenium.dev/blog/2023/headless-is-going-away/
+            'SELENIUM_DRIVER_ARGUMENTS': ['--headless=new']
         }
         cls.spider_klass = cls.SimpleSpider
