@@ -29,9 +29,11 @@ class BaseScrapySeleniumTestCase(TestCase):
         }
         '''
         cls.settings = {
+            'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
             'SELENIUM_DRIVER_NAME': 'chrome',
             'SELENIUM_DRIVER_EXECUTABLE_PATH': None,
             # https://www.selenium.dev/blog/2023/headless-is-going-away/
-            'SELENIUM_DRIVER_ARGUMENTS': ['--headless=new']
+            'SELENIUM_DRIVER_ARGUMENTS': ['--headless=new'],
+            'SELENIUM_DRIVER_LOGGER_LEVEL': 'INFO'
         }
         cls.spider_klass = cls.SimpleSpider

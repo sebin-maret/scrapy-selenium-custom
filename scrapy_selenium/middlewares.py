@@ -9,11 +9,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from .http import SeleniumRequest
 
+
 class SeleniumMiddleware:
     """Scrapy middleware handling the requests using selenium"""
 
     def __init__(self, driver_name, driver_executable_path,
-        browser_executable_path, command_executor, driver_arguments):
+                 browser_executable_path, command_executor, driver_arguments,
+                 logger_level: str = 'DEBUG'):
         """Initialize the selenium webdriver
 
         Parameters
@@ -28,6 +30,8 @@ class SeleniumMiddleware:
             The path of the executable binary of the browser
         command_executor: str
             Selenium remote server endpoint
+        logger_level: str
+            Logger level: 'DEBUG' by default
         """
 
         webdriver_base_path = f'selenium.webdriver.{driver_name}'
@@ -69,9 +73,12 @@ class SeleniumMiddleware:
             from selenium import webdriver
             from webdriver_manager.chrome import ChromeDriverManager
             from selenium.webdriver.chrome.service import Service as ChromeService
+            import logging
+            from selenium.webdriver.remote.remote_connection import LOGGER
             if driver_name and driver_name.lower() == 'chrome':
                 # options = webdriver.ChromeOptions()
                 # options.add_argument(o)
+                LOGGER.setLevel(getattr(logging, logger_level))
                 self.driver = webdriver.Chrome(options=driver_options,
                                                service=ChromeService(ChromeDriverManager().install()))
 
@@ -84,6 +91,7 @@ class SeleniumMiddleware:
         browser_executable_path = crawler.settings.get('SELENIUM_BROWSER_EXECUTABLE_PATH')
         command_executor = crawler.settings.get('SELENIUM_COMMAND_EXECUTOR')
         driver_arguments = crawler.settings.get('SELENIUM_DRIVER_ARGUMENTS')
+        logger_level = crawler.settings.get('SELENIUM_DRIVER_LOGGER_LEVEL', 'DEBUG')
 
         if driver_name is None:
             raise NotConfigured('SELENIUM_DRIVER_NAME must be set')
@@ -98,7 +106,8 @@ class SeleniumMiddleware:
             driver_executable_path=driver_executable_path,
             browser_executable_path=browser_executable_path,
             command_executor=command_executor,
-            driver_arguments=driver_arguments
+            driver_arguments=driver_arguments,
+            logger_level=logger_level
         )
 
         crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
