@@ -30,7 +30,7 @@ def get_requirements(source):
     except NameError:  # no idea how to fix this properly
         return [
             'scrapy >= 1.0.0',
-            'selenium >= 3.9.0',
+            'selenium >= 4.1.0',
         ]
 
 

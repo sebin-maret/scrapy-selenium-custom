@@ -71,7 +71,7 @@ class SeleniumMiddleware:
         else:
             # selenium4+ & webdriver-manager
             from selenium import webdriver
-            from webdriver_manager.chrome import ChromeDriverManager
+            # from webdriver_manager.chrome import ChromeDriverManager
             from selenium.webdriver.chrome.service import Service as ChromeService
             import logging
             from selenium.webdriver.remote.remote_connection import LOGGER
@@ -79,8 +79,9 @@ class SeleniumMiddleware:
                 # options = webdriver.ChromeOptions()
                 # options.add_argument(o)
                 LOGGER.setLevel(getattr(logging, logger_level))
+                # driver manager is added to the Selenium since 4.10.0
                 self.driver = webdriver.Chrome(options=driver_options,
-                                               service=ChromeService(ChromeDriverManager().install()))
+                                               service=ChromeService())
 
     @classmethod
     def from_crawler(cls, crawler):
