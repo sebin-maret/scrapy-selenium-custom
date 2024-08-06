@@ -6,6 +6,7 @@ from scrapy import signals
 from scrapy.exceptions import NotConfigured
 from scrapy.http import HtmlResponse
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.service import Service
 
 from .http import SeleniumRequest
 
@@ -73,17 +74,11 @@ class SeleniumMiddleware:
         else:
             # selenium4+ & webdriver-manager
             from selenium import webdriver
-            # from webdriver_manager.chrome import ChromeDriverManager
-            from selenium.webdriver.chrome.service import Service as ChromeService
             import logging
             from selenium.webdriver.remote.remote_connection import LOGGER
+            from webdriver_manager.chrome import ChromeDriverManager
             if driver_name and driver_name.lower() == 'chrome':
-                # options = webdriver.ChromeOptions()
-                # options.add_argument(o)
                 LOGGER.setLevel(getattr(logging, "ERROR"))
-                # driver manager is added to the Selenium since 4.10.0
-                # self.driver = webdriver.Chrome(options=driver_options,
-                #                                service=ChromeService())
                 self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=driver_options)
 
     @classmethod
