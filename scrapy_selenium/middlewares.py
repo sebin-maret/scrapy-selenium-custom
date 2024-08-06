@@ -44,10 +44,13 @@ class SeleniumMiddleware:
 
         driver_options = driver_options_klass()
 
-        if browser_executable_path:
-            driver_options.binary_location = browser_executable_path
+        # if browser_executable_path:
+        #     driver_options.binary_location = browser_executable_path
         for argument in driver_arguments:
             driver_options.add_argument(argument)
+
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
 
         driver_kwargs = {
             'executable_path': driver_executable_path,
@@ -57,8 +60,7 @@ class SeleniumMiddleware:
         # locally installed driver
         if driver_executable_path is not None:
             driver_kwargs = {
-                'executable_path': driver_executable_path,
-                f'{driver_name}_options': driver_options
+                f'options': driver_options
             }
             self.driver = driver_klass(**driver_kwargs)
         # remote driver
@@ -78,10 +80,11 @@ class SeleniumMiddleware:
             if driver_name and driver_name.lower() == 'chrome':
                 # options = webdriver.ChromeOptions()
                 # options.add_argument(o)
-                LOGGER.setLevel(getattr(logging, logger_level))
+                LOGGER.setLevel(getattr(logging, "ERROR"))
                 # driver manager is added to the Selenium since 4.10.0
-                self.driver = webdriver.Chrome(options=driver_options,
-                                               service=ChromeService())
+                # self.driver = webdriver.Chrome(options=driver_options,
+                #                                service=ChromeService())
+                self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=driver_options)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -97,10 +100,9 @@ class SeleniumMiddleware:
         if driver_name is None:
             raise NotConfigured('SELENIUM_DRIVER_NAME must be set')
 
-        # let's use webdriver-manager when nothing specified instead | RN just for Chrome
-        if (driver_name.lower() != 'chrome') and (driver_executable_path is None and command_executor is None):
-            raise NotConfigured('Either SELENIUM_DRIVER_EXECUTABLE_PATH '
-                                'or SELENIUM_COMMAND_EXECUTOR must be set')
+        if driver_name!="chrome":
+            raise NotConfigured('SELENIUM_DRIVER_NAME is supported for only chrome.')
+
 
         middleware = cls(
             driver_name=driver_name,
