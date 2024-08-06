@@ -31,6 +31,7 @@ def get_requirements(source):
         return [
             'scrapy >= 1.0.0',
             'selenium >= 4.1.0',
+            "webdriver-manager >= 4.0.2",
         ]
 
 
